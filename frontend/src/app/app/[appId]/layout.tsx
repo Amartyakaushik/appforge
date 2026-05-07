@@ -133,7 +133,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </nav>
 
             <div className="border-t p-3">
-              <Link href={`/app/${appId}/config`}>
+              <Link href={`/config/${appId}`}>
                 <Button variant="outline" size="sm" className="w-full">
                   <Settings className="mr-1.5 h-3.5 w-3.5" />
                   Edit Config
@@ -151,7 +151,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <p className="mt-1 text-gray-500">
                 Add pages to your config to see them here.
               </p>
-              <Link href={`/app/${appId}/config`}>
+              <Link href={`/config/${appId}`}>
                 <Button className="mt-4" variant="outline">
                   <Settings className="mr-1.5 h-4 w-4" />
                   Edit Config

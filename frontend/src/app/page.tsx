@@ -143,7 +143,7 @@ export default function HomePage() {
                         Open App
                       </Button>
                     </Link>
-                    <Link href={`/app/${app.id}/config`}>
+                    <Link href={`/config/${app.id}`}>
                       <Button variant="outline" size="sm">
                         <Settings className="h-3.5 w-3.5" />
                       </Button>
