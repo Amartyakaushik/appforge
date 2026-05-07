@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model App {
+  id        String       @id @default(uuid())
+  name      String
+  config    Json
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+  entities  EntityData[]
+  users     AppUser[]
+
+  @@map("apps")
+}
+
+model EntityData {
+  id         String   @id @default(uuid())
+  appId      String   @map("app_id")
+  entityName String   @map("entity_name")
+  data       Json
+  createdBy  String?  @map("created_by")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  app App @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  @@index([appId, entityName])
+  @@map("entity_data")
+}
+
+model AppUser {
+  id           String   @id @default(uuid())
+  appId        String   @map("app_id")
+  email        String
+  passwordHash String   @map("password_hash")
+  profile      Json     @default("{}")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  app App @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  @@unique([appId, email])
+  @@map("app_users")
+}
