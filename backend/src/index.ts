@@ -17,7 +17,20 @@ const PORT = process.env.PORT || 3001;
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: (origin, callback) => {
+      const allowed = process.env.FRONTEND_URL || "http://localhost:3000";
+      // Allow: exact match, any Vercel preview URL, localhost, or no origin (server-to-server)
+      if (
+        !origin ||
+        origin === allowed ||
+        origin.endsWith(".vercel.app") ||
+        origin.startsWith("http://localhost")
+      ) {
+        callback(null, true);
+      } else {
+        callback(null, true); // Allow all in production for demo purposes
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
