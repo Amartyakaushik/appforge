@@ -147,10 +147,32 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <main className="flex-1 p-4 md:p-6">
           {pages.length === 0 ? (
             <div className="rounded-lg border bg-white p-12 text-center">
-              <p className="text-lg font-medium text-gray-700">No pages defined</p>
-              <p className="mt-1 text-gray-500">
-                Add pages to your config to see them here.
-              </p>
+              <p className="text-lg font-medium text-gray-700">No pages could be generated</p>
+              {Object.keys(app.config.entities || {}).length === 0 ? (
+                <>
+                  <p className="mt-1 text-gray-500">
+                    Your config has no <code className="rounded bg-gray-100 px-1.5 py-0.5 text-sm font-mono">entities</code> defined.
+                  </p>
+                  <p className="mt-2 text-sm text-gray-400">
+                    The system needs entities with fields to generate UI. Example:
+                  </p>
+                  <pre className="mx-auto mt-3 max-w-md rounded-md bg-gray-50 p-3 text-left text-xs text-gray-600 overflow-x-auto">
+{`"entities": {
+  "contacts": {
+    "fields": {
+      "name": { "type": "string", "required": true },
+      "email": { "type": "email" },
+      "phone": { "type": "string" }
+    }
+  }
+}`}
+                  </pre>
+                </>
+              ) : (
+                <p className="mt-1 text-gray-500">
+                  Add pages to your config to see them here.
+                </p>
+              )}
               <Link href={`/config/${appId}`}>
                 <Button className="mt-4" variant="outline">
                   <Settings className="mr-1.5 h-4 w-4" />
