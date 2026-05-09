@@ -10,10 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import {
-  Tooltip,
-  TooltipContent,
   TooltipProvider,
-  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
   Dialog,
@@ -154,14 +151,9 @@ export default function HomePage() {
         <section className="mx-auto max-w-6xl px-6 pb-20">
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-800">Your Apps</h3>
-            <Tooltip>
-              <TooltipTrigger>
-                <Button variant="ghost" size="icon" onClick={fetchApps} className="h-8 w-8">
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Refresh</TooltipContent>
-            </Tooltip>
+            <Button variant="ghost" size="icon" onClick={fetchApps} className="h-8 w-8" title="Refresh">
+              <RefreshCw className="h-4 w-4" />
+            </Button>
           </div>
 
           {loading ? (
@@ -232,19 +224,15 @@ export default function HomePage() {
                           })}
                         </p>
                       </div>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 hover:bg-red-50 transition-all"
-                            onClick={() => handleDelete(app)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Delete app</TooltipContent>
-                      </Tooltip>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 hover:bg-red-50 transition-all"
+                        onClick={() => handleDelete(app)}
+                        title="Delete app"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-3">
@@ -268,16 +256,11 @@ export default function HomePage() {
                           Open
                         </Button>
                       </Link>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Link href={`/config/${app.id}`}>
-                            <Button variant="outline" size="sm" className="shadow-sm">
-                              <Settings className="h-3.5 w-3.5" />
-                            </Button>
-                          </Link>
-                        </TooltipTrigger>
-                        <TooltipContent>Edit config</TooltipContent>
-                      </Tooltip>
+                      <Link href={`/config/${app.id}`} title="Edit config">
+                        <Button variant="outline" size="sm" className="shadow-sm">
+                          <Settings className="h-3.5 w-3.5" />
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>

@@ -22,12 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+// Tooltips replaced with title attributes to avoid button nesting issues
 import { toast } from "sonner";
 import {
   Trash2,
@@ -152,7 +147,7 @@ export function TableRenderer({ page, config, appId }: RendererProps) {
   };
 
   return (
-    <TooltipProvider>
+    <>
       <Card className="shadow-sm">
         <CardHeader className="flex flex-row items-start justify-between gap-4">
           <div>
@@ -162,14 +157,9 @@ export function TableRenderer({ page, config, appId }: RendererProps) {
             </CardDescription>
           </div>
           <div className="flex gap-2 shrink-0">
-            <Tooltip>
-              <TooltipTrigger>
-                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={fetchData}>
-                  <RefreshCw className="h-3.5 w-3.5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Refresh</TooltipContent>
-            </Tooltip>
+            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={fetchData} title="Refresh">
+              <RefreshCw className="h-3.5 w-3.5" />
+            </Button>
             {actions.includes("create") && (
               <Button size="sm" variant="outline" onClick={() => setShowCsvImport(true)} className="shadow-sm">
                 <Upload className="mr-1.5 h-3.5 w-3.5" />
@@ -235,34 +225,26 @@ export function TableRenderer({ page, config, appId }: RendererProps) {
                           <TableCell>
                             <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                               {actions.includes("edit") && (
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="h-7 w-7"
-                                      onClick={() => setEditRecord(record)}
-                                    >
-                                      <Pencil className="h-3.5 w-3.5" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>Edit</TooltipContent>
-                                </Tooltip>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="h-7 w-7"
+                                  onClick={() => setEditRecord(record)}
+                                  title="Edit"
+                                >
+                                  <Pencil className="h-3.5 w-3.5" />
+                                </Button>
                               )}
                               {actions.includes("delete") && (
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                      onClick={() => handleDelete(record)}
-                                    >
-                                      <Trash2 className="h-3.5 w-3.5" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>Delete</TooltipContent>
-                                </Tooltip>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="h-7 w-7 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                  onClick={() => handleDelete(record)}
+                                  title="Delete"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
                               )}
                             </div>
                           </TableCell>
@@ -349,6 +331,6 @@ export function TableRenderer({ page, config, appId }: RendererProps) {
         fields={entity.fields}
         onSuccess={fetchData}
       />
-    </TooltipProvider>
+    </>
   );
 }
