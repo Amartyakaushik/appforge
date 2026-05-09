@@ -5,15 +5,34 @@ import type { RendererProps } from "./registry";
 import { getStats } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart3, TrendingUp, Hash } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { BarChart3, TrendingUp, Hash, ArrowUp, ArrowDown, Activity } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
   count: Hash,
   avg: TrendingUp,
   sum: BarChart3,
-  min: TrendingUp,
-  max: TrendingUp,
+  min: ArrowDown,
+  max: ArrowUp,
 };
+
+const colorMap = [
+  "from-blue-500/10 to-blue-500/5 border-blue-200/50",
+  "from-emerald-500/10 to-emerald-500/5 border-emerald-200/50",
+  "from-violet-500/10 to-violet-500/5 border-violet-200/50",
+  "from-amber-500/10 to-amber-500/5 border-amber-200/50",
+  "from-rose-500/10 to-rose-500/5 border-rose-200/50",
+  "from-cyan-500/10 to-cyan-500/5 border-cyan-200/50",
+];
+
+const iconColorMap = [
+  "text-blue-600 bg-blue-100",
+  "text-emerald-600 bg-emerald-100",
+  "text-violet-600 bg-violet-100",
+  "text-amber-600 bg-amber-100",
+  "text-rose-600 bg-rose-100",
+  "text-cyan-600 bg-cyan-100",
+];
 
 export function DashboardRenderer({ page, config, appId }: RendererProps) {
   const widgets = page.widgets || [];
@@ -26,7 +45,6 @@ export function DashboardRenderer({ page, config, appId }: RendererProps) {
       setLoading(true);
       setError(null);
       try {
-        // Group widgets by entity to minimize API calls
         const byEntity: Record<string, string[]> = {};
         for (const w of widgets) {
           if (!byEntity[w.entity]) byEntity[w.entity] = [];
@@ -52,9 +70,10 @@ export function DashboardRenderer({ page, config, appId }: RendererProps) {
 
   if (widgets.length === 0) {
     return (
-      <Card>
-        <CardContent className="p-6 text-gray-500">
-          No widgets configured for this dashboard.
+      <Card className="border-dashed">
+        <CardContent className="p-10 text-center">
+          <Activity className="mx-auto h-8 w-8 text-muted-foreground/50 mb-3" />
+          <p className="text-muted-foreground">No widgets configured for this dashboard.</p>
         </CardContent>
       </Card>
     );
@@ -63,9 +82,8 @@ export function DashboardRenderer({ page, config, appId }: RendererProps) {
   const getStatValue = (entity: string, operation: string, field?: string): string => {
     const entityStats = stats[entity];
     if (!entityStats) return "-";
-
     if (operation === "count") {
-      return entityStats.count != null ? String(entityStats.count) : "0";
+      return entityStats.count != null ? entityStats.count.toLocaleString() : "0";
     }
     const key = `${operation}_${field}`;
     const val = entityStats[key];
@@ -73,29 +91,46 @@ export function DashboardRenderer({ page, config, appId }: RendererProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">{page.name}</h2>
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">{page.name}</h2>
+        <p className="text-sm text-muted-foreground mt-1">Overview of your application metrics</p>
+      </div>
+
       {error && (
-        <div className="rounded-md bg-red-50 p-4 text-red-700">{error}</div>
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-destructive text-sm">
+          {error}
+        </div>
       )}
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {widgets.map((widget, idx) => {
           const Icon = iconMap[widget.operation] || Hash;
+          const color = colorMap[idx % colorMap.length];
+          const iconColor = iconColorMap[idx % iconColorMap.length];
+
           return (
-            <Card key={idx}>
+            <Card key={idx} className={`bg-gradient-to-br ${color} overflow-hidden transition-all hover:shadow-md`}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium text-gray-500">
+                <CardTitle className="text-sm font-medium text-muted-foreground">
                   {widget.label}
                 </CardTitle>
-                <Icon className="h-4 w-4 text-gray-400" />
+                <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${iconColor}`}>
+                  <Icon className="h-4 w-4" />
+                </div>
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <Skeleton className="h-8 w-24" />
+                  <Skeleton className="h-9 w-28" />
                 ) : (
-                  <p className="text-2xl font-bold">
-                    {getStatValue(widget.entity, widget.operation, widget.field)}
-                  </p>
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-3xl font-bold tracking-tight">
+                      {getStatValue(widget.entity, widget.operation, widget.field)}
+                    </p>
+                    <Badge variant="secondary" className="text-[10px] font-normal">
+                      {widget.entity}
+                    </Badge>
+                  </div>
                 )}
               </CardContent>
             </Card>
